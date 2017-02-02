@@ -29,6 +29,9 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request){
         })
 
     tokenString, _ := token.SignedString(secret)
+
+    cookie := &http.Cookie{Name: "jwtcookie", Value: tokenString, MaxAge: 3600, Secure: false, HttpOnly: true, Raw: tokenString}
+    http.SetCookie(w, cookie)
     
     w.Write([]byte(tokenString))
 }
