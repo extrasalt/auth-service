@@ -12,9 +12,11 @@ var secret = []byte("secrety") //get this from os.env
 func main(){
     r := mux.NewRouter()
 
+    r.HandleFunc("/auth", GetTokenHandler).Methods("POST")
+
     r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 
-    r.HandleFunc("/auth", GetTokenHandler).Methods("POST")
+    
 
     http.ListenAndServe(":3000", r)
 }
