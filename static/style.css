@@ -6,73 +6,6 @@ body {
     margin:0;
 }
 
-h2 {
-    font: 24px "Raleway";
-}
-
-table {
-    background: white;
-    border-left: 2px solid #eee;
-    border-radius: 5px;
-    width:80%;
-    margin: auto;
-    margin-top:30px;
-    padding: 30px;
-    height: auto;
-    font: bold 16px "Arial", sans-serif;
-}
-
-td {
-    padding-left: 20px;
-    padding-right:20px;
-    padding-top:10px;
-    padding-bottom: 10px;
-    color: #666;
-}
-
-#nav{
-    position: relative;
-    top:0;
-    right:0;
-    width: 100%;
-    margin:0 0 0 0;
-    height: 30px;
-    background: #e12828;
-    border-bottom: 3px solid #ccc;
-    padding: 10px;
-    text-align: right;
-}
-
-#innernav{
-    width: 80%;
-    padding: 10px;
-    padding-right:30px;
-}
-
-#nav a{
-    text-decoration: none;
-    font: bold 16px sans-serif;
-    color: white;
-}
-
-tr:hover {
-    background: #fafafa;
-}
-
-
-td {
-    border-bottom: 1px solid #fafafa;
-}
-
-button.destroy {
-    background: #e12828;
-    color: #fff;
-    border-radius: 5px;
-    padding: 10px;
-    border: 2px solid #eee;
-
-}
-
 
 #centerdiv {
     position: absolute;
@@ -103,7 +36,6 @@ button.destroy {
 
 #centerdiv > form > input:focus {
     background:#e13838;
-    border:2px solid white;
     outline:none;
 }
 
@@ -117,5 +49,3 @@ button.destroy {
     border-bottom: 3px solid #bbb;
 
 }
-/*color reference
-https://dribbble.com/shots/3252211-Groundwork-Project*/
