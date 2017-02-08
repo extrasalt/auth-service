@@ -32,7 +32,8 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request){
     }
 
     username := r.Form["name"][0]
-    password := r.Form["password"][0]   
+    password := r.Form["password"][0]
+    redirectUrl := r.Form["redirect"]   
 
     fmt.Println(username, password)
 
@@ -48,7 +49,11 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request){
         cookie := &http.Cookie{Name: "jwtcookie", Value: tokenString, MaxAge: 3600, Secure: false, HttpOnly: true, Raw: tokenString}
         http.SetCookie(w, cookie)
 
-        w.Write([]byte(tokenString))
+        if redirectUrl != nil {
+            http.Redirect(w,r,redirectUrl[0],302)
+        } else {
+            w.Write([]byte(tokenString))
+        }
     } else {
         w.Write([]byte("Auth failed"))
     }
