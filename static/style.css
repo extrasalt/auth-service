@@ -1,7 +1,5 @@
 body {
-    background: #fdfdfd;
-    color: #666;
-    font: 16px arial;
+    background: #e12828;
     padding: 0;
     margin:0;
 }
@@ -13,7 +11,7 @@ body {
     left:50%;
     margin-left: -200px;
     margin-top:-150px;
-    background: #e12828;
+    background: #fff ;
     width: 300px;
     height: 200px;
     padding:30px;
@@ -24,28 +22,27 @@ body {
 }
 
 #centerdiv > form > input {
-    background: #e12828;
     border: 0;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid #ccc;
+    border-radius: 5px;
     padding:20px 10px 2px 10px;
     margin-bottom: 30px;
     width: 100%;
-    color: white;
     font:bold 16px Arial;
 }
 
 #centerdiv > form > input:focus {
-    background:#e13838;
+    background:#eee;
     outline:none;
 }
 
 #centerdiv > form > input[type="submit"]{
-    background:#fff;
+    background: #e12828;
     margin: 10px;
-    color: #e12828;
+    color: #eee;
     border-radius:5px;
     width: auto;
     padding:10px 20px 10px 20px;
-    border-bottom: 3px solid #bbb;
+    border-bottom: 3px solid #f12828;
 
 }
