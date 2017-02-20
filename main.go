@@ -58,7 +58,25 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.Form["password"][0]
 	redirectUrl := r.Form["redirect"]
 
-	fmt.Println(username, password)
+    tokenString, err := authorize(username, password)
+
+    if err != nil {
+        fmt.Fprintln(w, err)
+    }
+
+    cookie := &http.Cookie{Name: "jwtcookie", Value: tokenString, MaxAge: 3600, Secure: false, HttpOnly: true, Raw: tokenString}
+        http.SetCookie(w, cookie)
+
+        if redirectUrl != nil {
+            http.Redirect(w, r, redirectUrl[0], 302)
+        } else {
+            w.Write([]byte(tokenString))
+        }
+	
+}
+
+func authorize(username string, password string) (token string, autherr error){
+
 
     var dbpassword string
 
@@ -79,25 +97,22 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request) {
 
     }
 
+    if password == dbpassword {
 
-	if username == "mohan" && password == dbpassword {
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+            "username": "mohan",
+            "exp":      time.Now().Add(time.Hour * 24).Unix(),
+        })
 
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"username": "mohan",
-			"exp":      time.Now().Add(time.Hour * 24).Unix(),
-		})
+        tokenString, _ := token.SignedString(secret)
 
-		tokenString, _ := token.SignedString(secret)
+        return tokenString, nil
 
-		cookie := &http.Cookie{Name: "jwtcookie", Value: tokenString, MaxAge: 3600, Secure: false, HttpOnly: true, Raw: tokenString}
-		http.SetCookie(w, cookie)
+        
+    } else {
+        autherr = fmt.Errorf("Cannot authorize %q", username)
 
-		if redirectUrl != nil {
-			http.Redirect(w, r, redirectUrl[0], 302)
-		} else {
-			w.Write([]byte(tokenString))
-		}
-	} else {
-		w.Write([]byte("Auth failed"))
-	}
+        return token, autherr
+    }
+
 }
