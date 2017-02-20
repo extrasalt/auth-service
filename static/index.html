@@ -4,12 +4,40 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+	
     <div id="centerdiv">   
-    <form action="auth" method="post">
+    <form id="mainform" action="auth" method="post">
         <input type="textfield" name="name" placeholder="Username">
         <input type="password" name="password" placeholder="Password">
-        <input type="submit" value="Sign in">
+        <input id="submitButton" type="submit" value="Login">
     </form>
-    </div>     
+    </div> 
+
+    <button id="toggle">Sign up</button>
+
+    <script type="text/javascript">
+
+    	var form = document.getElementById("mainform");
+    	var button = document.getElementById("submitButton");
+    	var toggle = document.getElementById("toggle")
+
+    	toggle.onclick = function(e){
+
+    		if (toggle.innerHTML == "Sign up"){
+    			toggle.innerHTML = "Login"
+    			form.action = "signup"
+    			submitButton.value = "Sign up"
+
+    		} else {
+    			toggle.innerHTML = "Sign up"
+    			form.action = "auth"
+    			submitButton.value = "Login"
+
+    		}
+    		
+
+    	}
+		
+	</script>    
 </body>
 </html>
