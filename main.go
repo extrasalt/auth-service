@@ -39,6 +39,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/auth", GetTokenHandler).Methods("POST")
+	r.HandleFunc("/signup", SignUpHandler).Methods("POST")
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 
@@ -72,6 +73,10 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(tokenString))
 	}
 
+}
+
+func SignUpHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Woohoo"))
 }
 
 func authorize(username string, password string) (token string, autherr error) {
