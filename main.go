@@ -30,8 +30,6 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// _, err = db.Exec("insert into login values('mohan', 'meme', 'meme')")
-
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -76,6 +74,17 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
+
+	err := r.ParseForm()
+
+	if err != nil {
+		panic(err)
+	}
+
+	username := r.Form["name"][0]
+	password := r.Form["password"][0]
+
+	_, err = DB.Exec("insert into login values($1, $2, 'meme')", username, password)
 	w.Write([]byte("Woohoo"))
 }
 
