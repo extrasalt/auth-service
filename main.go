@@ -6,11 +6,35 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
+
+    "database/sql"
+    _ "github.com/lib/pq"
+
 )
 
 var secret = []byte("secrety") //get this from os.env
 
+var DB *sql.DB
+
 func main() {
+
+    DB, err := sql.Open("postgres", "password=password  user=user dbname=my_db sslmode=disable")
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    _, err = DB.Exec("CREATE TABLE IF NOT EXISTS login(name varchar, password varchar, salt varchar)")
+
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    // _, err = db.Exec("insert into login values('mohan', 'meme', 'meme')")
+
+    if err != nil {
+        fmt.Println(err)
+    }
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/auth", GetTokenHandler).Methods("POST")
@@ -34,7 +58,34 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(username, password)
 
-	if username == "mohan" && password == "meme" {
+    var dbpassword string
+
+
+    //DB seems to be nil otherwise. Find out during refactor. 
+    DB, err := sql.Open("postgres", "password=password  user=user dbname=my_db sslmode=disable")
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    rows, err := DB.Query("Select password from login where name=$1", username)
+
+    if err != nil {
+        panic(err)
+    }
+
+    for rows.Next() {
+        err = rows.Scan(&dbpassword)
+       
+        if err != nil {
+            panic(err)
+        }
+
+        break
+
+    }
+
+
+	if username == "mohan" && password == dbpassword {
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 			"username": "mohan",
