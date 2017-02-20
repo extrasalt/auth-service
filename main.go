@@ -25,7 +25,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS login(name varchar, password varchar, salt varchar)")
+	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS login(name varchar, password varchar)")
 
 	if err != nil {
 		fmt.Println(err)
@@ -90,7 +90,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	_, err = DB.Exec("insert into login values($1, $2, 'meme')", username, hashedPassword)
+	_, err = DB.Exec("insert into login values($1, $2)", username, hashedPassword)
 	w.Write([]byte("Woohoo"))
 }
 
