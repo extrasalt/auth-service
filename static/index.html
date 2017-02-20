@@ -9,6 +9,7 @@
     <form id="mainform" action="auth" method="post">
         <input type="textfield" name="name" placeholder="Username">
         <input type="password" name="password" placeholder="Password">
+        <input type="password" name="confirm_password" placeholder="Confirm Password" id="cpw">
         <input id="submitButton" type="submit" value="Login">
     </form>
     </div> 
@@ -18,8 +19,9 @@
     <script type="text/javascript">
 
     	var form = document.getElementById("mainform");
-    	var button = document.getElementById("submitButton");
+    	var submitButton = document.getElementById("submitButton");
     	var toggle = document.getElementById("toggle")
+    	var cpw = document.getElementById("cpw")
 
     	toggle.onclick = function(e){
 
@@ -27,11 +29,13 @@
     			toggle.innerHTML = "Login"
     			form.action = "signup"
     			submitButton.value = "Sign up"
+    			cpw.style.display = "block"
 
     		} else {
     			toggle.innerHTML = "Sign up"
     			form.action = "auth"
     			submitButton.value = "Login"
+    			cpw.style.display = "none"
 
     		}
     		
