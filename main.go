@@ -7,9 +7,8 @@ import (
 	"net/http"
 	"time"
 
-    "database/sql"
-    _ "github.com/lib/pq"
-
+	"database/sql"
+	_ "github.com/lib/pq"
 )
 
 var secret = []byte("secrety") //get this from os.env
@@ -18,24 +17,24 @@ var DB *sql.DB
 
 func main() {
 
-    var err error
+	var err error
 
-    DB, err = sql.Open("postgres", "password=password  user=user dbname=my_db sslmode=disable")
-    if err != nil {
-        fmt.Println(err)
-    }
+	DB, err = sql.Open("postgres", "password=password  user=user dbname=my_db sslmode=disable")
+	if err != nil {
+		fmt.Println(err)
+	}
 
-    _, err = DB.Exec("CREATE TABLE IF NOT EXISTS login(name varchar, password varchar, salt varchar)")
+	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS login(name varchar, password varchar, salt varchar)")
 
-    if err != nil {
-        fmt.Println(err)
-    }
+	if err != nil {
+		fmt.Println(err)
+	}
 
-    // _, err = db.Exec("insert into login values('mohan', 'meme', 'meme')")
+	// _, err = db.Exec("insert into login values('mohan', 'meme', 'meme')")
 
-    if err != nil {
-        fmt.Println(err)
-    }
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	r := mux.NewRouter()
 
@@ -58,61 +57,59 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.Form["password"][0]
 	redirectUrl := r.Form["redirect"]
 
-    tokenString, err := authorize(username, password)
+	tokenString, err := authorize(username, password)
 
-    if err != nil {
-        fmt.Fprintln(w, err)
-    }
+	if err != nil {
+		fmt.Fprintln(w, err)
+	}
 
-    cookie := &http.Cookie{Name: "jwtcookie", Value: tokenString, MaxAge: 3600, Secure: false, HttpOnly: true, Raw: tokenString}
-        http.SetCookie(w, cookie)
+	cookie := &http.Cookie{Name: "jwtcookie", Value: tokenString, MaxAge: 3600, Secure: false, HttpOnly: true, Raw: tokenString}
+	http.SetCookie(w, cookie)
 
-        if redirectUrl != nil {
-            http.Redirect(w, r, redirectUrl[0], 302)
-        } else {
-            w.Write([]byte(tokenString))
-        }
-	
+	if redirectUrl != nil {
+		http.Redirect(w, r, redirectUrl[0], 302)
+	} else {
+		w.Write([]byte(tokenString))
+	}
+
 }
 
-func authorize(username string, password string) (token string, autherr error){
+func authorize(username string, password string) (token string, autherr error) {
 
+	var dbpassword string
 
-    var dbpassword string
+	rows, err := DB.Query("Select password from login where name=$1", username)
 
-    rows, err := DB.Query("Select password from login where name=$1", username)
+	if err != nil {
+		panic(err)
+	}
 
-    if err != nil {
-        panic(err)
-    }
+	for rows.Next() {
+		err = rows.Scan(&dbpassword)
 
-    for rows.Next() {
-        err = rows.Scan(&dbpassword)
-       
-        if err != nil {
-            panic(err)
-        }
+		if err != nil {
+			panic(err)
+		}
 
-        break
+		break
 
-    }
+	}
 
-    if password == dbpassword {
+	if password == dbpassword {
 
-        token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-            "username": "mohan",
-            "exp":      time.Now().Add(time.Hour * 24).Unix(),
-        })
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"username": "mohan",
+			"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		})
 
-        tokenString, _ := token.SignedString(secret)
+		tokenString, _ := token.SignedString(secret)
 
-        return tokenString, nil
+		return tokenString, nil
 
-        
-    } else {
-        autherr = fmt.Errorf("Cannot authorize %q", username)
+	} else {
+		autherr = fmt.Errorf("Cannot authorize %q", username)
 
-        return token, autherr
-    }
+		return token, autherr
+	}
 
 }
