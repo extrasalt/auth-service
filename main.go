@@ -9,6 +9,7 @@ import (
 
 	"database/sql"
 	_ "github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var secret = []byte("secrety") //get this from os.env
@@ -84,7 +85,12 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.Form["name"][0]
 	password := r.Form["password"][0]
 
-	_, err = DB.Exec("insert into login values($1, $2, 'meme')", username, password)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	_, err = DB.Exec("insert into login values($1, $2, 'meme')", username, hashedPassword)
 	w.Write([]byte("Woohoo"))
 }
 
@@ -109,7 +115,9 @@ func authorize(username string, password string) (token string, autherr error) {
 
 	}
 
-	if password == dbpassword {
+	err = bcrypt.CompareHashAndPassword([]byte(dbpassword), []byte(password))
+
+	if err == nil {
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 			"username": "mohan",
