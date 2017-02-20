@@ -18,7 +18,9 @@ var DB *sql.DB
 
 func main() {
 
-    DB, err := sql.Open("postgres", "password=password  user=user dbname=my_db sslmode=disable")
+    var err error
+
+    DB, err = sql.Open("postgres", "password=password  user=user dbname=my_db sslmode=disable")
     if err != nil {
         fmt.Println(err)
     }
@@ -59,13 +61,6 @@ func GetTokenHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(username, password)
 
     var dbpassword string
-
-
-    //DB seems to be nil otherwise. Find out during refactor. 
-    DB, err := sql.Open("postgres", "password=password  user=user dbname=my_db sslmode=disable")
-    if err != nil {
-        fmt.Println(err)
-    }
 
     rows, err := DB.Query("Select password from login where name=$1", username)
 
